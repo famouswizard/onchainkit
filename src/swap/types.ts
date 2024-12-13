@@ -93,9 +93,13 @@ export type LifecycleStatus =
   | {
       statusName: 'amountChange';
       statusData: {
-        amountFrom: string;
+        amountFrom?: string;
+        amountETH?: string;
+        amountUSDC?: string;
         amountTo: string;
         tokenFrom?: Token;
+        tokenFromETH?: Token;
+        tokenFromUSDC?: Token;
         tokenTo?: Token;
       } & LifecycleStatusDataShared;
     }
@@ -171,6 +175,68 @@ export type ProcessSwapTransactionParams = {
   updateLifecycleStatus: (state: LifecycleStatusUpdate) => void; // A function to set the lifecycle status of the component
   useAggregator: boolean;
   walletCapabilities: WalletCapabilities; // EIP-5792 wallet capabilities
+};
+
+export type SwapLiteTokens = {
+  fromETH: SwapUnit;
+  fromUSDC: SwapUnit;
+  to: SwapUnit;
+  from: SwapUnit;
+};
+
+/**
+ * Note: exported as public Type
+ */
+export type SwapLiteReact = {
+  className?: string; // Optional className override for top div element.
+  config?: SwapConfig;
+  experimental?: {
+    useAggregator: boolean; // Whether to use a DEX aggregator. (default: true)
+  };
+  isSponsored?: boolean; // An optional setting to sponsor swaps with a Paymaster. (default: false)
+  onError?: (error: SwapError) => void; // An optional callback function that handles errors within the provider.
+  onStatus?: (lifecycleStatus: LifecycleStatus) => void; // An optional callback function that exposes the component lifecycle state
+  onSuccess?: (transactionReceipt: TransactionReceipt) => void; // An optional callback function that exposes the transaction receipt
+  fromToken?: Token;
+  toToken: Token;
+  projectId: string; // Your CDP project ID found at https://portal.cdp.coinbase.com/
+};
+
+export type SwapLiteContextType = {
+  address?: Address; // Used to check if user is connected in SwapButton
+  config: SwapConfig;
+  fromETH: SwapUnit;
+  fromUSDC: SwapUnit;
+  lifecycleStatus: LifecycleStatus;
+  handleAmountChange: (amount: string) => void;
+  handleSubmit: (fromToken: SwapUnit) => void;
+  updateLifecycleStatus: (state: LifecycleStatusUpdate) => void; // A function to set the lifecycle status of the component
+  setTransactionHash: (hash: string) => void;
+  fromToken?: Token;
+  to?: SwapUnit;
+  from?: SwapUnit;
+  toToken: Token;
+  transactionHash: string;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: (open: boolean) => void;
+  projectId: string;
+};
+
+export type SwapLiteProviderReact = {
+  children: React.ReactNode;
+  config?: {
+    maxSlippage: number; // Maximum acceptable slippage for a swap. (default: 10) This is as a percent, not basis points
+  };
+  experimental: {
+    useAggregator: boolean; // Whether to use a DEX aggregator. (default: true)
+  };
+  isSponsored?: boolean; // An optional setting to sponsor swaps with a Paymaster. (default: false)
+  onError?: (error: SwapError) => void; // An optional callback function that handles errors within the provider.
+  onStatus?: (lifecycleStatus: LifecycleStatus) => void; // An optional callback function that exposes the component lifecycle state
+  onSuccess?: (transactionReceipt: TransactionReceipt) => void; // An optional callback function that exposes the transaction receipt
+  fromToken?: Token;
+  toToken: Token;
+  projectId: string;
 };
 
 /**
@@ -370,7 +436,7 @@ export type SwapUnit = {
   setAmount: Dispatch<SetStateAction<string>>;
   setAmountUSD: Dispatch<SetStateAction<string>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
-  setToken: Dispatch<SetStateAction<Token | undefined>>;
+  setToken?: Dispatch<SetStateAction<Token | undefined>>;
   token: Token | undefined;
 };
 
