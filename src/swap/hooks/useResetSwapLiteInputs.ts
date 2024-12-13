@@ -23,5 +23,5 @@ export const useResetSwapLiteInputs = ({
       to.setAmount(''),
       to.setAmountUSD(''),
     ]);
-  }, [fromETH, fromUSDC, to]);
+  }, [from, fromETH, fromUSDC, to]);
 };
