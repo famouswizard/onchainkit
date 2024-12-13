@@ -63,7 +63,7 @@ export const useSwapLiteTokens = (
   } = useSwapBalances({ address, fromToken: usdcToken, toToken });
 
   const {
-    fromBalanceString: fromBalanceString,
+    fromBalanceString,
     fromTokenBalanceError: fromBalanceError,
     fromTokenResponse: fromResponse,
   } = useSwapBalances({ address, fromToken, toToken });
